@@ -13,11 +13,12 @@ import android.widget.TextView;
 
 import com.jinojino.klashelper.R;
 import com.jinojino.klashelper.fragment.BoardFragment;
-import com.jinojino.klashelper.fragment.ClovaFragment;
+import com.jinojino.klashelper.fragment.LectureFragment;
 import com.jinojino.klashelper.fragment.WorkFragment;
+import com.jinojino.klashelper.fragment.WorkListFragment;
 
 
-public class MainActivity extends AppCompatActivity implements WorkFragment.OnFragmentInteractionListener, BoardFragment.OnFragmentInteractionListener, ClovaFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements WorkFragment.OnFragmentInteractionListener, BoardFragment.OnFragmentInteractionListener, LectureFragment.OnFragmentInteractionListener, WorkListFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
 
@@ -27,17 +28,14 @@ public class MainActivity extends AppCompatActivity implements WorkFragment.OnFr
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    setTitle("과제");
+                case R.id.work:
                     replaceFragment(new WorkFragment());
                     return true;
-                case R.id.navigation_dashboard:
-                    setTitle("게시판");
-                    replaceFragment(new BoardFragment());
+                case R.id.lecture:
+                    replaceFragment(new LectureFragment());
                     return true;
-                case R.id.navigation_notifications:
-                    setTitle("클로바 연동");
-                    replaceFragment(new ClovaFragment());
+                case R.id.dashboard:
+                    replaceFragment(new BoardFragment());
                     return true;
             }
             return false;
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements WorkFragment.OnFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_bar);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

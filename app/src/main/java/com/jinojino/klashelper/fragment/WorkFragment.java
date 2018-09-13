@@ -3,8 +3,13 @@ package com.jinojino.klashelper.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,6 +30,23 @@ public class WorkFragment extends Fragment {
         return fragment;
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.no_submit:
+                    replaceFragment(WorkListFragment.newInstance(0));
+                    return true;
+                case R.id.yes_submit:
+                    replaceFragment(WorkListFragment.newInstance(1));
+                    return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +56,23 @@ public class WorkFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_work, container, false);
+        View view =  inflater.inflate(R.layout.fragment_work, container, false);
+
+        BottomNavigationView navigation = (BottomNavigationView) view.findViewById(R.id.navigation_bar_work);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.work_fragment, WorkListFragment.newInstance(0)).commit();
+
+        return view;
     }
+
+    public void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.work_fragment, fragment).commit();
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
