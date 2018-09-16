@@ -17,15 +17,32 @@
         <activity android:name=".activity.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:label="MainActivity">
-        </activity>
+            android:label="MainActivity" />
 
+        <receiver android:name=".receiver.AlarmReceiver">
+            <intent-filter>
+                <action android:name="com.jinojino.klashelper.ALARM_START" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.AlarmService"
+            android:enabled="true"
+            android:exported="true"
+            >
+        <intent-filter>
+            <action android:name="com.jinojino.klashelper.START_SERVICE" />
+        </intent-filter>
+        </service>
+
+        <activity android:name=".activity.AlarmSettingActivity">
+
+        </activity>
     </application>
 
 </manifest>

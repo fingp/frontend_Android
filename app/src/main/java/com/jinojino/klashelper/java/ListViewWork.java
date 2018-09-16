@@ -1,20 +1,54 @@
 package com.jinojino.klashelper.java;
 
+import android.view.View;
+
 public class ListViewWork {
-    private String titleStr ;
-    private String descStr ;
+    private String workCode;
+    private String workCourse;
+    private String workTitle;
+    private String workDate;
+    private int workAlarm;
 
-    public void setTitle(String title) {
-        titleStr = title ;
-    }
-    public void setDesc(String desc) {
-        descStr = desc ;
+    public String getWorkCode() {
+        return workCode;
     }
 
-    public String getTitle() {
-        return this.titleStr ;
+    public void setWorkCode(String workCode) {
+        this.workCode = workCode;
     }
-    public String getDesc() {
-        return this.descStr ;
+
+    public String getWorkCourse() {
+        return workCourse;
     }
+
+    public void setWorkCourse(String workCourse) {
+        this.workCourse = workCourse;
+    }
+
+    public String getWorkTitle() {
+        return workTitle;
+    }
+
+    public void setWorkTitle(String workTitle) {
+        this.workTitle = workTitle;
+    }
+
+    public String getWorkDate() {
+        return workDate;
+    }
+
+    public void setWorkDate(String workDate) {
+        this.workDate = workDate;
+    }
+
+    public int getWorkAlarm() {
+        return workAlarm;
+    }
+
+    public void setWorkAlarm(int workAlarm) {
+        this.workAlarm = workAlarm;
+    }
+
+
+
 }

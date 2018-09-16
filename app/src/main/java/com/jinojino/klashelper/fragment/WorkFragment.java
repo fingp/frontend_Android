@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jinojino.klashelper.DB.DBHelper;
 import com.jinojino.klashelper.R;
 
 public class WorkFragment extends Fragment {
