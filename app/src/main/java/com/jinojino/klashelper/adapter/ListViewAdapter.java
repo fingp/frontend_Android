@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import com.jinojino.klashelper.DB.DBHelper;
 import com.jinojino.klashelper.R;
 import com.jinojino.klashelper.activity.AlarmSettingActivity;
+import com.jinojino.klashelper.java.Alarm;
 import com.jinojino.klashelper.java.ListViewWork;
 import com.jinojino.klashelper.java.Work;
 import com.jinojino.klashelper.receiver.AlarmReceiver;
@@ -38,7 +39,6 @@ public class ListViewAdapter extends BaseAdapter {
 
     private static final String TAG = "TestAlarmManagerActivity";
     private static final String INTENT_ACTION = "arabiannight.tistory.com.alarmmanager";
-    static  int flag=0;
 
     // ListViewAdapter의 생성자
     public ListViewAdapter() {
@@ -90,7 +90,7 @@ public class ListViewAdapter extends BaseAdapter {
                 Intent intent = new Intent(context, AlarmSettingActivity.class);
                 String workCourse = workCourseView.getText().toString();
                 String workTitle = workTitleView.getText().toString();
-                String workCode = workDateView.getText().toString();
+                String workCode = code;
                 // putExtra(key, value)
                 intent.putExtra("workCode", workCode);
                 intent.putExtra("workTitle", workTitle);
@@ -120,9 +120,11 @@ public class ListViewAdapter extends BaseAdapter {
 
                     Log.d("해당날짜", dateFinish);
                     try{
+                        Log.d("해당날짜", dateFinish);
                         Date raw = sdf.parse(dateFinish);
                         calendar.setTime(raw);
                     }catch (Exception e){
+                        e.printStackTrace();
                         Log.d("오류", "오류발생");
                     }
 
@@ -133,6 +135,8 @@ public class ListViewAdapter extends BaseAdapter {
 
                     Date date = new Date(now);
                     Date date1 = new Date(bTime);
+                    Log.d("오늘", date.toString());
+                    Log.d("과제", date1.toString());
 
                     String getTime = sdf.format(date);
                     String getTime2 = sdf.format(date1);
@@ -143,50 +147,40 @@ public class ListViewAdapter extends BaseAdapter {
                     intent.putExtra("workCode", workCode);
                     intent.putExtra("workTitle", workTitle);
                     intent.putExtra("workCourse", workCourse);
-
-                    PendingIntent sender = PendingIntent.getBroadcast(context, flag++, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    intent.putExtra("alarmTitle", "기본 알람");
 
                     if(bTime >= now){
+                        //db 저장
+                        Alarm tempAlarm = new Alarm(0, "기본 알람", workCode, getTime2, workCourse, workTitle);
+                        int temp = dbHelper.addAlarm(tempAlarm);
+
+                        // 알람 생성
+                        PendingIntent sender = PendingIntent.getBroadcast(context, temp, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         am.set(AlarmManager.RTC_WAKEUP, bTime, sender);
-                        Toast.makeText(context, getTime2+"에 알람 등록되었습니다.", Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(context, getTime2 + "에 알람 등록되었습니다.", Toast.LENGTH_SHORT).show();
                     }else{
-                        Toast.makeText(context, getTime2+ "는 이미 지난 알람입니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getTime2 + "는 이미 지난 알람입니다.", Toast.LENGTH_SHORT).show();
                     }
-//                    AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-//                    Intent intent = new Intent(context, AlarmReceiver.class);
-//                    intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-//
-//                    PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
-//
-//                    Calendar calendar = Calendar.getInstance();
-//                    //알람시간 calendar에 set해주기
-//
-//                    calendar.set(Calendar.HOUR_OF_DAY, 1);
-//                    calendar.set(Calendar.MINUTE, 40);
-//                    calendar.set(Calendar.SECOND, 0);
-//
-//                    long aTime = System.currentTimeMillis();
-//                    long bTime = calendar.getTimeInMillis();
-//
-//                    //하루의 시간을 나타냄
-//                    long interval = 1000 * 60 * 60  * 24;
-//
-//                    //만일 내가 설정한 시간이 현재 시간보다 작다면 알람이 바로 울려버리기 때문에 이미 시간이 지난 알람은 다음날 울려야 한다.
-//                    while(aTime>bTime){
-//                        bTime += interval;
-//                    }
-//
-//
-//                    //알람 예약
-//                    am.set(AlarmManager.RTC_WAKEUP, bTime, sender);
-//
-//
-//                    Toast.makeText(context, "알람 등록 완료", Toast.LENGTH_SHORT).show();
                 }else{
-                    // DB 업데이트 하기
+                    // DB에 스위치 설정 저장
                     dbHelper.updateAlarm(workCode, alaramSwitch.isChecked()? 1 : 0);
 
                     // 알람 해제하기
+                    ArrayList<Integer> idList = dbHelper.getAlarmId(workCode);
+
+                    for(int i=0; i<idList.size(); i++){
+                        int temp = idList.get(i);
+                        Intent intent = new Intent(context, AlarmReceiver.class);
+                        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+                        PendingIntent sender = PendingIntent.getBroadcast(context, temp, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                        am.cancel(sender);
+                        sender.cancel();
+                    }
+
+                    // DB에서 해당 과제 알람 전체 삭제
+                    dbHelper.deleteAlarmByWorkcode(workCode);
 
                     Toast.makeText(context, "알람 해제 완료", Toast.LENGTH_SHORT).show();
                 }

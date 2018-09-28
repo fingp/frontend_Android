@@ -10,8 +10,9 @@ public class Work {
     int submitFlag;
     int alarm;
     int isAlive;
+    int workType;
 
-    public Work(int id, String codeWork, String nameCoruse, String nameWork, String dateStart, String dateFinish, int submitFlag, int alarm, int isAlive) {
+    public Work(int id, String codeWork, String nameCoruse, String nameWork, String dateStart, String dateFinish, int submitFlag, int alarm, int isAlive, int workType) {
         this.id = id;
         this.codeWork = codeWork;
         this.nameCoruse = nameCoruse;
@@ -21,6 +22,23 @@ public class Work {
         this.submitFlag = submitFlag;
         this.alarm = alarm;
         this.isAlive = isAlive;
+        this.workType = workType;
+    }
+
+    public int getIsAlive() {
+        return isAlive;
+    }
+
+    public void setIsAlive(int isAlive) {
+        this.isAlive = isAlive;
+    }
+
+    public int getWorkType() {
+        return workType;
+    }
+
+    public void setWorkType(int workType) {
+        this.workType = workType;
     }
 
     public int getAlarm() {

@@ -16,7 +16,7 @@
     <FrameLayout
         android:id="@+id/work_fragment"
         android:layout_width="match_parent"
-        android:layout_height="505dp"
+        android:layout_height="445dp"
         android:layout_marginTop="60dp"
         android:layout_weight="1"
         app:layout_constraintBottom_toBottomOf="parent"
