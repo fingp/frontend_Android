@@ -39,7 +39,9 @@ public class WorkListFragment extends Fragment implements SwipeRefreshLayout.OnR
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     // 제출 on/off
-    private static final String ARG_PARAM1 = "param1";
+    private static final String TYPE_NAME = "type";
+    private static final String FLAG_SUBMIT = "flag";
+
     DBHelper dbHelper;
     SharedPreferences data;
     SharedPreferences.Editor editor;
@@ -50,7 +52,8 @@ public class WorkListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
     // TODO: Rename and change types of parameters
-    private int mParam1;
+    private int type;
+    private int flag;
 
     private OnFragmentInteractionListener mListener;
 
@@ -113,29 +116,58 @@ public class WorkListFragment extends Fragment implements SwipeRefreshLayout.OnR
         } catch(Exception e) {
             e.printStackTrace();
         }
-        if(mParam1 == 0){
-            // Adapter 생성
-            adapter = new ListViewAdapter() ;
+        if(type == 0){
+            if(flag == 0){
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
 
-            // 리스트뷰 참조 및 Adapter달기
-            listview.setAdapter(adapter);
-            ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitWork();
+                // 리스트뷰 참조 및 Adapter달기
+                listview.setAdapter(adapter);
+                ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitWork();
 
-            for(int i=0; i<noSubmitWorklist.size(); i++){
-                adapter.addItem(noSubmitWorklist.get(i));
+                for(int i=0; i<noSubmitWorklist.size(); i++){
+                    adapter.addItem(noSubmitWorklist.get(i));
+                }
+
+            } else{
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
+
+                // 리스트뷰 참조 및 Adapter달기
+                listview.setAdapter(adapter);
+
+                ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitWork();
+
+                for(int i=0; i<yesSubmitWorklist.size(); i++){
+                    adapter.addItem(yesSubmitWorklist.get(i));
+                }
             }
 
-        } else{
-            // Adapter 생성
-            adapter = new ListViewAdapter() ;
+        }else{
+            if(flag == 0){
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
 
-            // 리스트뷰 참조 및 Adapter달기
-            listview.setAdapter(adapter);
+                // 리스트뷰 참조 및 Adapter달기
+                listview.setAdapter(adapter);
+                ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitLecture();
 
-            ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitWork();
+                for(int i=0; i<noSubmitWorklist.size(); i++){
+                    adapter.addItem(noSubmitWorklist.get(i));
+                }
 
-            for(int i=0; i<yesSubmitWorklist.size(); i++){
-                adapter.addItem(yesSubmitWorklist.get(i));
+            } else{
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
+
+                // 리스트뷰 참조 및 Adapter달기
+                listview.setAdapter(adapter);
+
+                ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitLecture();
+
+                for(int i=0; i<yesSubmitWorklist.size(); i++){
+                    adapter.addItem(yesSubmitWorklist.get(i));
+                }
             }
         }
     }
@@ -145,10 +177,11 @@ public class WorkListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     // TODO: Rename and change types and number of parameters
-    public static WorkListFragment newInstance(int param1) {
+    public static WorkListFragment newInstance(int type, int flag) {
         WorkListFragment fragment = new WorkListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, param1);
+        args.putInt(TYPE_NAME, type);
+        args.putInt(FLAG_SUBMIT, flag);
         fragment.setArguments(args);
         return fragment;
     }
@@ -167,7 +200,8 @@ public class WorkListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         View view = inflater.inflate(R.layout.fragment_work_list, container, false);
         Bundle args = getArguments();
-        mParam1 = args.getInt(ARG_PARAM1);
+        type = args.getInt(TYPE_NAME);
+        flag = args.getInt(FLAG_SUBMIT);
 
         swipe = (SwipeRefreshLayout)view.findViewById(R.id.swipe_layout);
         swipe.setOnRefreshListener(this);
@@ -177,69 +211,65 @@ public class WorkListFragment extends Fragment implements SwipeRefreshLayout.OnR
         String pw = data.getString("pw", "default value");
 
         dbHelper= new DBHelper(getActivity(), "Work.db", null, 1);
+        if(type == 0){
+            if(flag == 0){
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
 
-//        // db 초기화하기
-//        HttpThread h = new HttpThread(id, pw);
-//        h.start();
-//        try {
-//            h.join();
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//        }
-//        worklist = new ArrayList<Work>();
-//        String response = h.getResult();
-//        try{
-//            worklist = new ArrayList<Work>();
-//            JSONArray jarray = new JSONArray(response);
-//            JSONArray countArray = jarray.getJSONArray(1);
-//
-//            for(int j=0; j<countArray.length(); j++){
-//                JSONObject workObject = countArray.getJSONObject(j);  // JSONObject 추출
-//                int isSubmit = workObject.getInt("isSubmit");
-//                String workFile = workObject.getString("workFile");
-//                int workType = workObject.getInt("workType");
-//                String workCode = workObject.getString("workCode");
-//                String createTime = workObject.getString("workCreateTime");
-//                String finishTime = workObject.getString("workFinishTime");
-//                String workTitle = workObject.getString("workTitle");
-//                String workCourse =workObject.getString("workCourse") ;
-//                worklist.add(new Work(1, workCode, workCourse, workTitle, createTime, finishTime, isSubmit, 0, 1, workType));
-//            }
-//            // db에 모든 과제 업데이트
-//            dbHelper.updateAll(worklist);
-//        } catch(JSONException e){
-//            e.printStackTrace();
-//        }
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
+                ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitWork();
 
-        // db에서 불러오기
+                for(int i=0; i<noSubmitWorklist.size(); i++){
+                    adapter.addItem(noSubmitWorklist.get(i));
+                }
 
-        if(mParam1 == 0){
-            // Adapter 생성
-            adapter = new ListViewAdapter() ;
+            } else{
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
 
-            // 리스트뷰 참조 및 Adapter달기
-            listview = (ListView) view.findViewById(R.id.list_work);
-            listview.setAdapter(adapter);
-            ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitWork();
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
 
-            for(int i=0; i<noSubmitWorklist.size(); i++){
-                adapter.addItem(noSubmitWorklist.get(i));
+                ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitWork();
+
+                for(int i=0; i<yesSubmitWorklist.size(); i++){
+                    adapter.addItem(yesSubmitWorklist.get(i));
+                }
+            }
+        }else{
+            if(flag == 0){
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
+
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
+                ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitLecture();
+
+                for(int i=0; i<noSubmitWorklist.size(); i++){
+                    adapter.addItem(noSubmitWorklist.get(i));
+                }
+
+            } else{
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
+
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
+
+                ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitLecture();
+
+                for(int i=0; i<yesSubmitWorklist.size(); i++){
+                    adapter.addItem(yesSubmitWorklist.get(i));
+                }
             }
 
-        } else{
-            // Adapter 생성
-            adapter = new ListViewAdapter() ;
-
-            // 리스트뷰 참조 및 Adapter달기
-            listview = (ListView) view.findViewById(R.id.list_work);
-            listview.setAdapter(adapter);
-
-            ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitWork();
-
-            for(int i=0; i<yesSubmitWorklist.size(); i++){
-                adapter.addItem(yesSubmitWorklist.get(i));
-            }
         }
+
         return view;
     }
 
@@ -273,32 +303,63 @@ public class WorkListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     public void refreshList(View view){
-        if(mParam1 == 0){
-            // Adapter 생성
-            adapter = new ListViewAdapter() ;
+        if(type == 0){
+            if(flag == 0){
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
 
-            // 리스트뷰 참조 및 Adapter달기
-            listview = (ListView) view.findViewById(R.id.list_work);
-            listview.setAdapter(adapter);
-            ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitWork();
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
+                ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitWork();
 
-            for(int i=0; i<noSubmitWorklist.size(); i++){
-                adapter.addItem(noSubmitWorklist.get(i));
+                for(int i=0; i<noSubmitWorklist.size(); i++){
+                    adapter.addItem(noSubmitWorklist.get(i));
+                }
+
+            } else{
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
+
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
+
+                ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitWork();
+
+                for(int i=0; i<yesSubmitWorklist.size(); i++){
+                    adapter.addItem(yesSubmitWorklist.get(i));
+                }
+            }
+        }else{
+            if(flag == 0){
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
+
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
+                ArrayList<Work> noSubmitWorklist = dbHelper.getNoSubmitLecture();
+
+                for(int i=0; i<noSubmitWorklist.size(); i++){
+                    adapter.addItem(noSubmitWorklist.get(i));
+                }
+
+            } else{
+                // Adapter 생성
+                adapter = new ListViewAdapter() ;
+
+                // 리스트뷰 참조 및 Adapter달기
+                listview = (ListView) view.findViewById(R.id.list_work);
+                listview.setAdapter(adapter);
+
+                ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitLecture();
+
+                for(int i=0; i<yesSubmitWorklist.size(); i++){
+                    adapter.addItem(yesSubmitWorklist.get(i));
+                }
             }
 
-        } else{
-            // Adapter 생성
-            adapter = new ListViewAdapter() ;
-
-            // 리스트뷰 참조 및 Adapter달기
-            listview = (ListView) view.findViewById(R.id.list_work);
-            listview.setAdapter(adapter);
-
-            ArrayList<Work> yesSubmitWorklist = dbHelper.getYesSubmitWork();
-
-            for(int i=0; i<yesSubmitWorklist.size(); i++){
-                adapter.addItem(yesSubmitWorklist.get(i));
-            }
         }
     }
 }

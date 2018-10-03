@@ -31,10 +31,10 @@ public class MainActivity extends AppCompatActivity implements WorkFragment.OnFr
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.work:
-                    replaceFragment(new WorkFragment());
+                    replaceFragment(new WorkFragment().newInstance(0));
                     return true;
                 case R.id.lecture:
-                    replaceFragment(new LectureFragment());
+                    replaceFragment(new WorkFragment().newInstance(1));
                     return true;
                 case R.id.dashboard:
                     replaceFragment(new BoardFragment());
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements WorkFragment.OnFr
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.main_fragment, new WorkFragment()).commit();
+        fragmentTransaction.add(R.id.main_fragment, new WorkFragment().newInstance(0)).commit();
     }
 
     public void replaceFragment(Fragment fragment){

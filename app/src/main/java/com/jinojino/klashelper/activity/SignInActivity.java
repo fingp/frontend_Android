@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.jinojino.klashelper.DB.DBHelper;
 import com.jinojino.klashelper.R;
@@ -23,6 +24,7 @@ public class SignInActivity extends AppCompatActivity {
     DBHelper dbHelper;
     String id="";
     String pw="";
+    String msg="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +57,18 @@ public class SignInActivity extends AppCompatActivity {
                     pw = userList.get(1);
                 }
                 else{
-                    Log.d("로그", "노존재노존재");
+
                 }
                 String id_in = idInput.getText().toString();
                 String pw_in = pwInput.getText().toString();
 
                 if(id.compareTo(id_in)==0 && pw.compareTo(pw_in)==0){
-
+                    msg = "로그인 성공!";
                 }
                 else{
                     dbHelper.deleteAll();
                     dbHelper.setUser(id_in, pw_in);
+                    msg = "화면을 내려 과제 목록을 갱신해주세요.";
                 }
 
                 data = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -76,6 +79,7 @@ public class SignInActivity extends AppCompatActivity {
 
                 //다음 화면으로
                 Intent intent= new Intent(SignInActivity.this, MainActivity.class);
+                Toast.makeText(getApplicationContext(),msg, Toast.LENGTH_LONG).show();
                 startActivity(intent);
 
             }
@@ -83,3 +87,4 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 }
+

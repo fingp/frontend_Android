@@ -18,7 +18,10 @@ import com.jinojino.klashelper.R;
 
 public class WorkFragment extends Fragment {
 
+    private static final String TYPE_NAME = "type";
     private OnFragmentInteractionListener mListener;
+
+    private int type;
 
     public WorkFragment() {
         // Required empty public constructor
@@ -26,8 +29,11 @@ public class WorkFragment extends Fragment {
 
 
     // TODO: Rename and change types and number of parameters
-    public static WorkFragment newInstance() {
+    public static WorkFragment newInstance(int type) {
         WorkFragment fragment = new WorkFragment();
+        Bundle args = new Bundle();
+        args.putInt(TYPE_NAME, type);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -38,10 +44,10 @@ public class WorkFragment extends Fragment {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.no_submit:
-                    replaceFragment(WorkListFragment.newInstance(0));
+                    replaceFragment(WorkListFragment.newInstance(type, 0));
                     return true;
                 case R.id.yes_submit:
-                    replaceFragment(WorkListFragment.newInstance(1));
+                    replaceFragment(WorkListFragment.newInstance(type, 1));
                     return true;
             }
             return false;
@@ -58,12 +64,14 @@ public class WorkFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_work, container, false);
+        Bundle args = getArguments();
+        type = args.getInt(TYPE_NAME);
 
         BottomNavigationView navigation = (BottomNavigationView) view.findViewById(R.id.navigation_bar_work);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.work_fragment, WorkListFragment.newInstance(0)).commit();
+        fragmentTransaction.add(R.id.work_fragment, WorkListFragment.newInstance(type, 0)).commit();
 
         return view;
     }

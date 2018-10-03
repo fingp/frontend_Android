@@ -89,7 +89,6 @@ public class DBHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             workList.add(new Work(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getInt(6), cursor.getInt(7), cursor.getInt(8), cursor.getInt(9)));
         }
-
         return workList;
     }
 
@@ -99,11 +98,35 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<Work> workList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM Work WHERE submitFlag = 1 AND isAlive = 1 AND workType=0 ORDER BY datetime(workFinishTime) ASC;", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM Work WHERE submitFlag = 1 AND isAlive = 1 AND workType=0 ORDER BY datetime(workFinishTime) DESC;", null);
         while (cursor.moveToNext()) {
             workList.add(new Work(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getInt(6), cursor.getInt(7), cursor.getInt(8), cursor.getInt(9)));
         }
+        return workList;
+    }
+    // 미제출 과제 가져오기
+    public ArrayList<Work> getNoSubmitLecture(){
+        ArrayList<Work> workList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
 
+        // DB에 있는 데이터를 쉽게 처리하기 위해 Cursor를 사용하여 테이블에 있는 모든 데이터 출력
+        Cursor cursor = db.rawQuery("SELECT * FROM Work WHERE submitFlag = 0 AND isAlive = 1 AND workType=1 ORDER BY datetime(workFinishTime) ASC;", null);
+        while (cursor.moveToNext()) {
+            workList.add(new Work(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getInt(6), cursor.getInt(7), cursor.getInt(8), cursor.getInt(9)));
+        }
+        return workList;
+    }
+
+    // 제출 과제 가져오기
+    public ArrayList<Work> getYesSubmitLecture(){
+
+        ArrayList<Work> workList = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM Work WHERE submitFlag = 1 AND isAlive = 1 AND workType=1 ORDER BY datetime(workFinishTime) DESC;", null);
+        while (cursor.moveToNext()) {
+            workList.add(new Work(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getInt(6), cursor.getInt(7), cursor.getInt(8), cursor.getInt(9)));
+        }
         return workList;
     }
 

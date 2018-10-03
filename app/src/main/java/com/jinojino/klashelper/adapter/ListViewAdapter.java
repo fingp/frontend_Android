@@ -76,7 +76,7 @@ public class ListViewAdapter extends BaseAdapter {
         // 아이템 내 각 위젯에 데이터 반영
         workCourseView.setText(listViewWork.getWorkCourse());
         workTitleView.setText(listViewWork.getWorkTitle());
-        workDateView.setText(listViewWork.getWorkDate());
+        workDateView.setText(listViewWork.getWorkDate().compareToIgnoreCase("0") == 0 ? "기간 없음" : listViewWork.getWorkDate());
         alaramSwitch.setChecked(listViewWork.getWorkAlarm() <= 0 ? false : true);
 
         // 날짜 아이템 선택
