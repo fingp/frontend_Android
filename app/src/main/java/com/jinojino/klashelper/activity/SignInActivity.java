@@ -32,33 +32,52 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         dbHelper= new DBHelper(getApplicationContext(), "Work.db", null, 1);
+        data = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         //id 받는 칸
         final TextInputEditText idInput = (TextInputEditText) findViewById(R.id.id_input);
         //pw 받는 칸
         final TextInputEditText pwInput = (TextInputEditText) findViewById(R.id.pw_input);
 
-        ArrayList<String> userList = dbHelper.getUser();
-
-        if(userList.size()>0){
-            id = userList.get(0);
-            pw = userList.get(1);
+//        ArrayList<String> userList = dbHelper.getUser();
+//
+//        if(userList.size()>0){
+//            id = userList.get(0);
+//            pw = userList.get(1);
+//            idInput.setText(id);
+//            pwInput.setText(pw);
+//        }
+        if(data.contains("id") || data.contains("pw")){
+            id = data.getString("id","");
+            pw = data.getString("pw", "");
             idInput.setText(id);
             pwInput.setText(pw);
+
+            msg = "로그인 성공!";
+
+            Intent intent= new Intent(SignInActivity.this, MainActivity.class);
+            Toast.makeText(getApplicationContext(),msg, Toast.LENGTH_LONG).show();
+            startActivity(intent);
         }
 
         Button loginButton = (Button)findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                ArrayList<String> userList = dbHelper.getUser();
-                if(userList.size()>0){
-                    id = userList.get(0);
-                    pw = userList.get(1);
-                }
-                else{
+//                ArrayList<String> userList = dbHelper.getUser();
+//                if(userList.size()>0){
+//                    id = userList.get(0);
+//                    pw = userList.get(1);
+//                }
+//                else{
+//
+//                }
 
+                if(data.contains("id") || data.contains("pw")){
+                    id = data.getString("id","");
+                    pw = data.getString("pw", "");
                 }
+
                 String id_in = idInput.getText().toString();
                 String pw_in = pwInput.getText().toString();
 
@@ -71,7 +90,6 @@ public class SignInActivity extends AppCompatActivity {
                     msg = "화면을 내려 과제 목록을 갱신해주세요.";
                 }
 
-                data = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 editor = data.edit();
                 editor.putString("id", idInput.getText().toString());
                 editor.putString("pw", pwInput.getText().toString());
